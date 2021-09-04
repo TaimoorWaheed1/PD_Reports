@@ -1,0 +1,18 @@
+--isPublic_Discrepancy
+
+select 
+coid.id as co_id
+, coid.name
+, coid.gvkey
+, coid.ticker
+, twiqac."x2iqAssetClass"
+, twiqac."x2iqFinInst"
+, twiqac.updated_by
+FROM sbb."SenatorCompanies" coid
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on
+coid.id = twiqac.company_id
+where 
+("x2iqAssetClass" = 'Crypto' or "x2iqAssetClass" = 'ETF' or "x2iqAssetClass" = 'ETN' or "x2iqAssetClass" = 'Mutual Fund' or "x2iqAssetClass" = 'REIT' or "x2iqAssetClass" = 'Stock'  or gvkey > '1')
+and coid.is_public <> true ;

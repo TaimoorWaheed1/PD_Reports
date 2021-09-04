@@ -45,7 +45,7 @@ where st."isApproved" = 'true'
 and senf."isApproved" = 'true'
 )
 select * from cte
-where ("x2iqAssetClass" != 'Crypto' and "x2iqAssetClass" != 'ETF' and "x2iqAssetClass" != 'Mutual Fund' and "x2iqAssetClass" != 'REIT' and "x2iqAssetClass" != 'Stock')
+where ("x2iqAssetClass" != 'Crypto' and "x2iqAssetClass" != 'ETF' and "x2iqAssetClass" != 'ETN' and "x2iqAssetClass" != 'Mutual Fund' and "x2iqAssetClass" != 'REIT' and "x2iqAssetClass" != 'Stock')
 and "sharePrice" notnull 
 and "filingDate" <= '2015-01-01'
 and "transactionDate" >= '2013-01-01'

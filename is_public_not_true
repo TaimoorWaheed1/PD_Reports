@@ -1,0 +1,16 @@
+select 
+coid.id as co_id
+, coid.name
+, coid.gvkey
+, coid.ticker
+, coid.last_updated_by
+FROM sbb."SenatorCompanies" coid
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on
+coid.id = twiqac.company_id
+where 
+(coid.gvkey > '0' or twiqac.is_market_traded = true)
+and coid.is_public <> true 
+and (coid.last_updated_on >= '2021-08-20' or twiqac.last_updated_on >= '2021-08-20')
+;

@@ -1,0 +1,80 @@
+--Possibly Options or Bonds
+with CTE as (
+
+SELECT rt."filingId", rt."tradeIndex", rt."tradeId", repf."officeName", repf."filingDate", rt."transactionDate", rt."owner", rt."transactionType", rt."assetName", rt.x2iq_asset_name, rt.ticker, rt.gvkey, rt.amount, rt."amountAsNumber",
+coalesce(rt.price, rt.compustat_price) as "sharePrice",
+coalesce(rt.currency_code, rt.compustat_currency_code)        as "currency",
+rt.share_range, rt.no_of_shares, rt."comment", twiqac."x2iqAssetClass", twiqac."x2iqFinInst", rt.is_fractional_shares, rt."sourceUrl", rt."isCapitalGain", concat(lower(rt."assetName"),' + ', lower(rt."comment")) as bot_name_comment
+
+from 
+sbb."RepTrades" rt
+
+JOIN
+sbb."RepFilings" repf
+on
+rt."filingId" = repf."filingId"
+
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on twiqac."ID" = rt.ref_senator_company_asset_class_id
+
+where rt."isApproved" = 'true'
+and repf."isApproved" = 'true'
+
+union 
+
+SELECT st."filingId", st."tradeIndex", st."tradeId", senf."officeName", senf."filingDate", st."transactionDate", st."owner", st."transactionType", st."assetName", st.x2iq_asset_name, st.ticker, st.gvkey, st.amount, st."amountAsNumber",
+coalesce(st.price, st.compustat_price) as "sharePrice",
+coalesce(st.currency_code, st.compustat_currency_code)        as "currency",
+st.share_range, st.no_of_shares, st."comment", twiqac."x2iqAssetClass", twiqac."x2iqFinInst", st.is_fractional_shares, st."sourceUrl", false, concat(lower(st."assetName"),' + ', lower(st."comment"))  as bot_name_comment
+
+
+FROM 
+sbb."SenatorTrades" as st
+
+JOIN 
+sbb."SenatorFilings" as senf
+on senf."filingId" = st."filingId" 
+
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on twiqac."ID" = st.ref_senator_company_asset_class_id
+
+
+where st."isApproved" = 'true' 
+and senf."isApproved" = 'true'
+)
+select * from cte
+where ("x2iqAssetClass" != 'Stock Options' and "x2iqAssetClass" != 'Corporate Bond' and "x2iqAssetClass" != 'Municipal Security')
+and "filingDate" <= '2015-01-01'
+and (bot_name_comment like '% nts%' 
+or bot_name_comment like '% notes%' 
+or bot_name_comment like '% bond%' 
+or bot_name_comment like '% bnd%' 
+or bot_name_comment like '% glb%'
+or bot_name_comment like '% gmt%' 
+or bot_name_comment like '%term %'
+or bot_name_comment like '% medium%'  
+or bot_name_comment like '% mdm%'  
+or bot_name_comment like '% short%'  
+or bot_name_comment like '% st %'  
+or bot_name_comment like '% maturity %'  
+or bot_name_comment like '% expiration %'  
+or bot_name_comment like '% exp %'  
+or bot_name_comment like '% call %'
+or bot_name_comment like '% callable %'   
+or bot_name_comment like '% put %'  
+or bot_name_comment like '% variable %'
+or bot_name_comment like '% var %'    
+or bot_name_comment like '% fixed %'
+or bot_name_comment like '%0%.%'
+or bot_name_comment like '%1%.%'
+or bot_name_comment like '%2%.%'
+or bot_name_comment like '%3%.%'
+or bot_name_comment like '%4%.%'
+or bot_name_comment like '%5%.%'
+or bot_name_comment like '%6%.%'
+or bot_name_comment like '%7%.%'
+or bot_name_comment like '%8%.%'
+or bot_name_comment like '%9%.%')
+;

@@ -1,4 +1,4 @@
---All Politician Trades [Refined]
+--Zero Price Error
 with CTE as (
 
 SELECT rt."filingId", rt."tradeIndex", rt."tradeId", repf."officeName", repf."filingDate", rt."transactionDate", rt."owner", rt."transactionType", rt."assetName", rt.x2iq_asset_name, rt.ticker, rt.gvkey, rt.amount, rt."amountAsNumber",

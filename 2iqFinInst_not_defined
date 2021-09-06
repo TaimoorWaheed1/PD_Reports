@@ -1,0 +1,54 @@
+--2iqFinInst_not_defined
+with CTE as (
+
+SELECT rt."filingId", rt."tradeIndex", rt."tradeId", repf."officeName", repf."filingDate", rt."transactionDate", rt."owner", rt."transactionType", rt."assetName", rt.x2iq_asset_name, rt.ticker, rt.gvkey, rt.amount, rt."amountAsNumber",
+coalesce(rt.price, rt.compustat_price) as "sharePrice",
+coalesce(rt.currency_code, rt.compustat_currency_code)        as "currency",
+rt.share_range, rt.no_of_shares, rt."comment", twiqac."x2iqAssetClass", twiqac."x2iqFinInst", rt.is_fractional_shares, rt."sourceUrl", rt."isCapitalGain", concat(lower(rt."assetName"),' + ', lower(rt."comment")) as bot_name_comment
+
+from 
+sbb."RepTrades" rt
+
+JOIN
+sbb."RepFilings" repf
+on
+rt."filingId" = repf."filingId"
+
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on twiqac."ID" = rt.ref_senator_company_asset_class_id
+
+where rt."isApproved" = 'true'
+and repf."isApproved" = 'true'
+
+union 
+
+SELECT st."filingId", st."tradeIndex", st."tradeId", senf."officeName", senf."filingDate", st."transactionDate", st."owner", st."transactionType", st."assetName", st.x2iq_asset_name, st.ticker, st.gvkey, st.amount, st."amountAsNumber",
+coalesce(st.price, st.compustat_price) as "sharePrice",
+coalesce(st.currency_code, st.compustat_currency_code)        as "currency",
+st.share_range, st.no_of_shares, st."comment", twiqac."x2iqAssetClass", twiqac."x2iqFinInst", st.is_fractional_shares, st."sourceUrl", false, concat(lower(st."assetName"),' + ', lower(st."comment"))  as bot_name_comment
+
+
+FROM 
+sbb."SenatorTrades" as st
+
+JOIN 
+sbb."SenatorFilings" as senf
+on senf."filingId" = st."filingId" 
+
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on twiqac."ID" = st.ref_senator_company_asset_class_id
+
+
+where st."isApproved" = 'true' 
+and senf."isApproved" = 'true'
+)
+select * from cte
+where char_length("x2iqFinInst") <1
+and "x2iqAssetClass" != 'Municipal Security'
+and 
+		(bot_name_comment ilike '% class %' 
+	or bot_name_comment ilike '% series %' 
+	or bot_name_comment ilike '% b %')
+;

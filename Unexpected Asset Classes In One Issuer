@@ -33,5 +33,3 @@ from t1
 		on t1.name = t2.name
 order by t1.name asc
 ;
-
---where ("x2iqAssetClass" = 'Stock' and "x2iqAssetClass" = 'Stock Options')

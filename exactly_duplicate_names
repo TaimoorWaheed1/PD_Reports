@@ -1,0 +1,5 @@
+select name
+from sbb."SenatorCompanies"
+group by name
+having count("name") > 1
+;

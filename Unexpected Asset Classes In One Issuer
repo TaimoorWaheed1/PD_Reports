@@ -1,0 +1,37 @@
+with t1 as(
+select 
+coid.id as co_id
+, coid.name
+, twiqac."x2iqAssetClass"
+FROM sbb."SenatorCompanies" coid
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on
+coid.id = twiqac.company_id
+where "x2iqAssetClass" = 'Stock'
+
+union
+
+select 
+coid.id as co_id
+, coid.name
+, twiqac."x2iqAssetClass"
+FROM sbb."SenatorCompanies" coid
+JOIN
+sbb."SenatorCompanyAssetClasses" twiqac
+on
+coid.id = twiqac.company_id
+where "x2iqAssetClass" = 'Stock Options'
+)
+select t1.*
+from t1
+		join (select name 
+			from t1
+			group by name
+			having count("name") > 1
+			) t2
+		on t1.name = t2.name
+order by t1.name asc
+;
+
+--where ("x2iqAssetClass" = 'Stock' and "x2iqAssetClass" = 'Stock Options')

@@ -7,7 +7,7 @@ coalesce(rt.currency_code, rt.compustat_currency_code)        as "currency",
 rt.share_range, rt.no_of_shares, rt."comment", twiqac."x2iqAssetClass", twiqac."x2iqFinInst", rt.is_fractional_shares, rt."sourceUrl", rt."isCapitalGain"
 
 from 
-sbb."RepTrades" rt
+sbb."RepTrades" r
 
 JOIN
 sbb."RepFilings" repf

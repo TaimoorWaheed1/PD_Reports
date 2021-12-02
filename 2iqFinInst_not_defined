@@ -30,7 +30,6 @@ st.share_range, st.no_of_shares, st."comment", twiqac."x2iqAssetClass", twiqac."
 
 
 FROM 
-sbb."SenatorTrades" as st
 
 JOIN 
 sbb."SenatorFilings" as senf
